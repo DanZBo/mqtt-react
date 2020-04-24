@@ -24,7 +24,6 @@ function defaultDispatch(topic, message, packet) {
 
 
 export default function subscribe(opts = { dispatch: defaultDispatch }) {
-    const { topic } = opts;
     const dispatch = (opts.dispatch) ? opts.dispatch : defaultDispatch;
 
     return (TargetComponent) => {
@@ -38,7 +37,7 @@ export default function subscribe(opts = { dispatch: defaultDispatch }) {
 
             constructor(props, context) {
                 super(props, context);
-
+                this.topic = props.topic;
                 this.client = props.client || context.mqtt;
                 this.state = {
                     subscribed: false,
@@ -66,12 +65,12 @@ export default function subscribe(opts = { dispatch: defaultDispatch }) {
             }
 
             subscribe() {
-                this.client.subscribe(topic);
+                this.client.subscribe(this.topic);
                 this.setState({ subscribed: true });
             }
 
             unsubscribe() {
-                this.client.unsubscribe(topic);
+                this.client.unsubscribe(this.topic);
                 this.setState({ subscribed: false });
             }
 
